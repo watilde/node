@@ -25,3 +25,9 @@ domainWithASCII.forEach((pair) => {
   const asciiConvertedToUnicode = domainToUnicode(ascii);
   strictEqual(asciiConvertedToUnicode, domain);
 });
+
+domainWithASCII.slice(1).forEach((pair) => {
+  const domain = 'http://' + pair[0] + '/';
+  const u = new url.URL(domain)
+  strictEqual(u.toString({unicode: true}), domain);
+});
