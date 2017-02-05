@@ -83,5 +83,9 @@ module.exports = [
     'url': 'tag:joe@example.org,2001:foo/bar',
     'protocol': 'tag:',
     'pathname': 'joe@example.org,2001:foo/bar'
+  },
+  {
+    'url': 'file://////foo/bar',
+    'href': 'file:///foo/bar'
   }
 ];

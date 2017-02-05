@@ -731,13 +731,15 @@ namespace url {
             if (has_state_override)
               goto done;
             buffer.clear();
-            if (url.scheme == "file:") {
-              state = kFile;
-            } else if (special &&
+            if (special &&
                        has_base &&
                        DOES_HAVE_SCHEME(base) &&
                        url.scheme == base.scheme) {
-              state = kSpecialRelativeOrAuthority;
+              if (url.scheme == "file:") {
+                state = kFile;
+              } else {
+                state = kSpecialRelativeOrAuthority;
+              }
             } else if (special) {
               state = kSpecialAuthoritySlashes;
             } else if (p[1] == '/') {
@@ -950,7 +952,11 @@ namespace url {
           break;
         case kSpecialAuthorityIgnoreSlashes:
           if (ch != '/' && ch != '\\') {
-            state = kAuthority;
+            if (url.scheme == "file:") {
+              state = kFile;
+            } else {
+              state = kAuthority;
+            }
             continue;
           }
           break;
