@@ -2572,13 +2572,11 @@ if the stream is closed.
 
 [HTTP/2]: https://tools.ietf.org/html/rfc7540
 [HTTP/1]: http.html
-[https]: https.html
 [`net.Socket`]: net.html
 [`tls.TLSSocket`]: tls.html
 [`tls.createServer()`]: tls.html#tls_tls_createserver_options_secureconnectionlistener
 [`ClientHttp2Stream`]: #http2_class_clienthttp2stream
 [Compatibility API]: #http2_compatibility_api
-[alpn-negotiation]: #http2_alpn_negotiation
 [`Duplex`]: stream.html#stream_class_stream_duplex
 [Headers Object]: #http2_headers_object
 [`Http2Stream`]: #http2_class_http2stream
@@ -2590,5 +2588,3 @@ if the stream is closed.
 [`'unknownProtocol'`]: #http2_event_unknownprotocol
 [`'request'`]: #http2_event_request
 [Readable Stream]: stream.html#stream_class_stream_readable
-[`ServerRequest`]: #http2_class_server_request
-[`stream.pushStream()`]: #http2_stream-pushstream
