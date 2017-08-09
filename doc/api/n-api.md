@@ -342,7 +342,7 @@ to be added to the error object.  If the optional parameter is NULL
 then no code will be associated with the error. If a code is provided,
 the name associated with the error is also updated to be:
 
-```
+```text
 originalName [code]
 ```
 
@@ -350,7 +350,7 @@ where originalName is the original name associated with the error
 and code is the code that was provided.  For example if the code
 is 'ERR_ERROR_1' and a TypeError is being created the name will be:
 
-```
+```text
 TypeError [ERR_ERROR_1]
 ```
 
@@ -3340,15 +3340,12 @@ support it:
 [`napi_create_type_error`]: #n_api_napi_create_type_error
 [`napi_delete_async_work`]: #n_api_napi_delete_async_work
 [`napi_define_class`]: #n_api_napi_define_class
-[`napi_delete_element`]: #n_api_napi_delete_element
-[`napi_delete_property`]: #n_api_napi_delete_property
 [`napi_delete_reference`]: #n_api_napi_delete_reference
 [`napi_escape_handle`]: #n_api_napi_escape_handle
 [`napi_get_array_length`]: #n_api_napi_get_array_length
 [`napi_get_element`]: #n_api_napi_get_element
 [`napi_get_property`]: #n_api_napi_get_property
 [`napi_has_property`]: #n_api_napi_has_property
-[`napi_has_own_property`]: #n_api_napi_has_own_property
 [`napi_set_property`]: #n_api_napi_set_property
 [`napi_get_reference_value`]: #n_api_napi_get_reference_value
 [`napi_is_error`]: #n_api_napi_is_error
