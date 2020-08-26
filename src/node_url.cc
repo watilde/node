@@ -2274,6 +2274,10 @@ void DomainToASCII(const FunctionCallbackInfo<Value>& args) {
     args.GetReturnValue().Set(FIXED_ONE_BYTE_STRING(env->isolate(), ""));
     return;
   }
+  if (host.ToString().empty()) {
+    args.GetReturnValue().Set(FIXED_ONE_BYTE_STRING(env->isolate(), ""));
+    return;
+  }
   std::string out = host.ToStringMove();
   args.GetReturnValue().Set(
       String::NewFromUtf8(env->isolate(), out.c_str()).ToLocalChecked());
