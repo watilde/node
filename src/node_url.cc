@@ -1199,6 +1199,85 @@ std::vector<std::string> FromJSStringArray(Environment* env,
   return vec;
 }
 
+std::string ParseHref(Environment* env, Local<Object> target_obj, int32_t flags) {
+  Local<Context> context = env->context();
+  Local<Value> scheme =
+      target_obj->Get(env->context(), env->scheme_string()).ToLocalChecked();
+  if (scheme->IsString()) {
+    Utf8Value value(env->isolate(), scheme);
+    std::string href = *value + std::string(":");
+    Local<Value> host =
+        target_obj->Get(env->context(),
+                        env->host_string()).ToLocalChecked();
+    if (host->IsString()) {
+      href += "//";
+      if ((flags & URL_FLAGS_HAS_USERNAME) ||
+          (flags & URL_FLAGS_HAS_PASSWORD)) {
+        Local<Value> username =
+            target_obj->Get(env->context(), env->username_string()).ToLocalChecked();
+        if (username->IsString()) {
+          Utf8Value value(env->isolate(), scheme);
+          href += *value;
+        }
+        Local<Value> password =
+            target_obj->Get(env->context(), env->password_string()).ToLocalChecked();
+        if (password->IsString()) {
+          Utf8Value value(env->isolate(), password);
+          href += ":";
+          href += *value;
+        }
+        href += "@";
+      }
+      Utf8Value value(env->isolate(), host);
+      href += *value;
+      Local<Value> port =
+          target_obj->Get(env->context(), env->port_string()).ToLocalChecked();
+      if (port->IsString()) {
+        Utf8Value value(env->isolate(), port);
+        href += *value;
+      }
+    }
+    Local<Value> path =
+        target_obj->Get(env->context(),
+                          env->path_string()).ToLocalChecked();
+    if (flags & URL_FLAGS_CANNOT_BE_BASE) {
+      if (path->IsArray()) {
+        std::vector<std::string> value =
+            FromJSStringArray(env, path.As<Array>());
+        href += value[0];
+      }
+    } else {
+      std::vector<std::string> value = FromJSStringArray(env, path.As<Array>());
+      if (host->IsString() && value.size() > 1 && value[0].empty()) {
+        href += "/.";
+      }
+      for (size_t i = 0; i < value.size(); ++i) {
+        href += "/";
+        href += value[i];
+      }
+    }
+    Local<Value> query =
+        target_obj->Get(env->context(),
+                          env->query_string()).ToLocalChecked();
+    if (query->IsString()) {
+      Utf8Value value(env->isolate(), query);
+      href += "?";
+      href += *value;
+    }
+    Local<Value> fragment =
+        target_obj->Get(env->context(),
+                          env->fragment_string()).ToLocalChecked();
+    if ((flags & URL_FLAGS_HAS_FRAGMENT) && fragment->IsString()) {
+      Utf8Value value(env->isolate(), fragment);
+      href += "#";
+      href += *value;
+    }
+    return href;
+  } else {
+    return "";
+  }
+}
+
 url_data HarvestBase(Environment* env, Local<Object> base_obj) {
   url_data base;
   Local<Context> context = env->context();
@@ -1279,16 +1358,14 @@ url_data HarvestContext(Environment* env, Local<Object> context_obj) {
     context.port = port.As<Int32>()->Value();
   if (context.flags & URL_FLAGS_HAS_USERNAME) {
     Local<Value> username =
-        context_obj->Get(env->context(),
-                         env->username_string()).ToLocalChecked();
+        context_obj->Get(env->context(), env->username_string()).ToLocalChecked();
     CHECK(username->IsString());
     Utf8Value value(env->isolate(), username);
     context.username.assign(*value, value.length());
   }
   if (context.flags & URL_FLAGS_HAS_PASSWORD) {
     Local<Value> password =
-        context_obj->Get(env->context(),
-                         env->password_string()).ToLocalChecked();
+        context_obj->Get(env->context(), env->password_string()).ToLocalChecked();
     CHECK(password->IsString());
     Utf8Value value(env->isolate(), password);
     context.password.assign(*value, value.length());
@@ -1299,6 +1376,10 @@ url_data HarvestContext(Environment* env, Local<Object> context_obj) {
   if (host->IsString()) {
     Utf8Value value(env->isolate(), host);
     context.host.assign(*value, value.length());
+  }
+  if (scheme->IsString()) {
+    std::string href = ParseHref(env, context_obj, context.flags);
+    context.href.assign(href, href.length());
   }
   return context;
 }

@@ -71,6 +71,7 @@ struct url_data {
   std::string query;
   std::string fragment;
   std::vector<std::string> path;
+  std::string href;
 };
 
 class URL {
@@ -158,6 +159,9 @@ class URL {
       ret += '/' + element;
     }
     return ret;
+  }
+  const std::string& href() const {
+    return context_.href;
   }
 
   // Get the path of the file: URL in a format consumable by native file system
